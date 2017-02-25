@@ -28,17 +28,17 @@ to:
 Usage
 -----
 
-   docker run --rm \
-     -e AWS_ACCESS_KEY_ID=... \
-     -e AWS_SECRET_ACCESS_KEY=... \
-     nickstenning/s3-npm-publish <pkgname> <s3path>
+    docker run --rm \
+      -e AWS_ACCESS_KEY_ID=... \
+      -e AWS_SECRET_ACCESS_KEY=... \
+      nickstenning/s3-npm-publish <pkgname> <s3path>
 
 For example, if you were releasing the `mypkg` package:
 
-   docker run --rm \
-     -e AWS_ACCESS_KEY_ID=... \
-     -e AWS_SECRET_ACCESS_KEY=... \
-     nickstenning/s3-npm-publish mypkg s3://cdn.mypkg.org
+    docker run --rm \
+      -e AWS_ACCESS_KEY_ID=... \
+      -e AWS_SECRET_ACCESS_KEY=... \
+      nickstenning/s3-npm-publish mypkg s3://cdn.mypkg.org
 
 See the "Example scenario" below to understand how `s3-npm-publish` lays out
 files in your bucket.
@@ -46,24 +46,24 @@ files in your bucket.
 To release a specific version of a package (any NPM version identifier will
 work):
 
-   docker run --rm \
-     -e AWS_ACCESS_KEY_ID=... \
-     -e AWS_SECRET_ACCESS_KEY=... \
-     nickstenning/s3-npm-publish mypkg@2.0.1 s3://cdn.mypkg.org
+    docker run --rm \
+      -e AWS_ACCESS_KEY_ID=... \
+      -e AWS_SECRET_ACCESS_KEY=... \
+      nickstenning/s3-npm-publish mypkg@2.0.1 s3://cdn.mypkg.org
 
 To release to a path other than the bucket root:
 
-   docker run --rm \
-     -e AWS_ACCESS_KEY_ID=... \
-     -e AWS_SECRET_ACCESS_KEY=... \
-     nickstenning/s3-npm-publish mypkg s3://cdn.mypkg.org/static
+    docker run --rm \
+      -e AWS_ACCESS_KEY_ID=... \
+      -e AWS_SECRET_ACCESS_KEY=... \
+      nickstenning/s3-npm-publish mypkg s3://cdn.mypkg.org/static
 
 If you are running in an environment where the AWS CLI tools will be able to
 obtain credentials without you explicitly providing them (for example on an EC2
 instance with an appropriate instance role profile) you can omit the `AWS_*`
 environment variables:
 
-   docker run --rm nickstenning/s3-npm-publish mypkg s3://cdn.mypkg.org
+    docker run --rm nickstenning/s3-npm-publish mypkg s3://cdn.mypkg.org
 
 Example scenario
 ----------------
