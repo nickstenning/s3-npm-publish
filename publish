@@ -1,0 +1,73 @@
+#!/bin/sh
+
+set -eu
+
+if [ "$#" -ne 2 ]; then
+  echo >&2 "Usage: publish <pkg> <s3path>"
+  echo >&2
+  echo >&2 "e.g. publish mypkg@1.2.3 s3://assets.mypkg.com"
+  exit 1
+fi
+
+status () {
+  echo >&2 "---> $@"
+}
+
+PKG=$1
+S3PATH=$2
+
+# Extract the bucket name from any passed path
+S3BUCKET=${S3PATH#s3://}
+S3BUCKET=${S3BUCKET%%/*}
+
+status "fetching tarball"
+TARBALL=$(npm --no-progress pack "$PKG")
+
+status "extracting tarball"
+tar zxf "$TARBALL"
+
+PKGNAME=$(jq -r .name package/package.json)
+PKGVERSION=$(jq -r .version package/package.json)
+
+# Fetch the region from the bucket name
+status "determining bucket region"
+S3REGION=$(aws s3api get-bucket-location --bucket "$S3BUCKET" | jq -r .LocationConstraint)
+
+status "uploading package"
+aws s3 sync \
+  --region "$S3REGION" \
+  --acl public-read \
+  --cache-control "public, max-age=315360000, immutable" \
+  package/ \
+  "$S3PATH/$PKGNAME/$PKGVERSION/"
+
+if ! echo "$PKGVERSION" | egrep -q '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+  status "package is a pre-release, skipping aliases"
+  exit 0
+fi
+
+if [ "$(jq -r 'has("main")' package/package.json)" != "true" ]; then
+  status "package has no 'main' entrypoint, skipping aliases"
+  exit 0
+fi
+
+PKGENTRY=$(jq -r .main package/package.json)
+status "uploading entrypoint aliases"
+
+aws s3 cp \
+  --region "$S3REGION" \
+  --acl public-read \
+  --cache-control "public, max-age=315360000, immutable" \
+  package/"$PKGENTRY" \
+  "$S3PATH/$PKGNAME/$PKGVERSION"
+
+PKGVERSIONMIN=$(echo "$PKGVERSION" | cut -d. -f-2)
+PKGVERSIONMAJ=$(echo "$PKGVERSION" | cut -d. -f-1)
+for alias in "$PKGVERSIONMIN" "$PKGVERSIONMAJ"; do
+  aws s3 cp \
+    --region "$S3REGION" \
+    --acl public-read \
+    --cache-control "public, max-age=1800, must-revalidate" \
+    package/"$PKGENTRY" \
+    "$S3PATH/$PKGNAME/$alias"
+done
