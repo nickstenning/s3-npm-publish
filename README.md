@@ -109,14 +109,16 @@ used to set up aliases in the bucket. For example if `package.json` contains
 
 then `s3-npm-publish` will upload `index.js` to
 
-    s3://assets.foobar.com/foobar/1.2.3
-    s3://assets.foobar.com/foobar/1.2
-    s3://assets.foobar.com/foobar/1
+    s3://assets.giraffejs.com/giraffejs@1.2.3
+    s3://assets.giraffejs.com/giraffejs@1.2
+    s3://assets.giraffejs.com/giraffejs@1
+    s3://assets.giraffejs.com/giraffejs
 
 The first of these (with the full version number) will be served with similar
-`Cache-Control` headers to the rest of the package. The latter two (which may be
-updated when a new version is released) are served with a much shorter TTL and a
-request to user agents to revalidate the resource if the cache entry goes stale:
+`Cache-Control` headers to the rest of the package. The latter three (which may
+be updated when a new version is released) are served with a much shorter TTL
+and a request to user agents to revalidate the resource if the cache entry goes
+stale:
 
     Cache-Control: public, max-age=1800, must-revalidate
 
