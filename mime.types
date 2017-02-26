@@ -148,7 +148,7 @@ application/javascript				js
 # application/jose
 # application/jose+json
 # application/jrd+json
-application/json				json
+application/json				json map
 # application/json-patch+json
 # application/json-seq
 application/jsonml+json				jsonml
