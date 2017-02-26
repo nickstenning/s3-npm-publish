@@ -25,6 +25,32 @@ to:
 [1]: https://www.npmjs.com/
 [2]: https://aws.amazon.com/documentation/s3/
 
+Why?
+----
+
+Why would you use this? Because:
+
+1. You publish a JavaScript application that you want developers to be able to
+   include on their site using a single tag such as:
+   `<script src="https://cdn.mypackage.com/mypackage"></script>`
+2. You want to take advantage of HTTP/2 request multiplexing to load the various
+   assets that make up your application (i.e. you don't want to have to bundle
+   your entire application into a single file).
+3. You want to be certain that when you release a new version of the package,
+   that release is observed as "atomic" by your users. There should be no
+   possibility of a user's browser loading half of the assets from the new
+   version and half from the old version.
+4. You want to make best possible use of CDN and browser caches when delivering
+   your application to users.
+
+This tool enables a release process that satisfies all of the above by releasing
+the majority of your package to versioned URLs with caching headers that
+indicate the content is immutable.
+
+Efficient releasing of new versions is made possible by aliasing a package
+"entrypoint" script with a short cache TTL. This entrypoint script is
+responsible for loading the rest of your application.
+
 Usage
 -----
 
