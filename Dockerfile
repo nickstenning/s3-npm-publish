@@ -8,6 +8,7 @@ RUN apk add --no-cache \
   && pip install --no-cache-dir awscli \
   && mkdir /src
 
+ADD mime.types /etc/mime.types
 ADD publish /usr/local/bin/publish
 
 WORKDIR /src
