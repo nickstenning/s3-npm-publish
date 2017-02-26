@@ -1534,6 +1534,7 @@ chemical/x-cml					cml
 chemical/x-csml					csml
 # chemical/x-pdb
 chemical/x-xyz					xyz
+font/woff2					woff2
 image/bmp					bmp
 image/cgm					cgm
 # image/dicom-rle
