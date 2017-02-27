@@ -31,7 +31,9 @@ PKGVERSION=$(jq -r .version package/package.json)
 
 # Fetch the region from the bucket name
 status "determining bucket region"
-S3REGION=$(aws s3api get-bucket-location --bucket "$S3BUCKET" | jq -r .LocationConstraint)
+# Presumably for historical reasons, LocationConstraint is given as null for
+# buckets in us-east-1.
+S3REGION=$(aws s3api get-bucket-location --bucket "$S3BUCKET" | jq -r '.LocationConstraint // "us-east-1"')
 
 status "uploading package"
 aws s3 sync \
